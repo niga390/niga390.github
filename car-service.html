@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoPro – Full Car Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #151820;
+    --surface2: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --accent: #e8a020;
+    --accent2: #ff6b35;
+    --blue: #3b82f6;
+    --text: #f0f2f7;
+    --muted: #7a8299;
+    --green: #22c55e;
+    --card-glow: 0 0 40px rgba(232,160,32,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(13,15,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--accent);
+  }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-back:hover { color: var(--text); border-color: var(--accent); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-link {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--text); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* PAGE */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  .service-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    line-height: 1.1;
+  }
+
+  .service-title .badge {
+    font-size: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    background: rgba(232,160,32,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(232,160,32,0.3);
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* GALLERY */
+  .gallery-main {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .gallery-main:hover img { transform: scale(1.02); }
+
+  .gallery-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    pointer-events: none;
+  }
+
+  .gallery-label {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .gallery-label .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+  }
+
+  .thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .thumb {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+    background: var(--surface2);
+  }
+  .thumb.active { border-color: var(--accent); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ABOUT */
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+  }
+
+  .about-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 14px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+  }
+
+  .about-card p {
+    color: #b0b8cc;
+    line-height: 1.75;
+    font-size: 0.95rem;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(232,160,32,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pricing-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-glow);
+  }
+
+  .pricing-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pricing-tab {
+    flex: 1;
+    padding: 14px;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.03em;
+    position: relative;
+    bottom: -1px;
+  }
+  .pricing-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(232,160,32,0.04);
+  }
+
+  .pricing-body {
+    padding: 28px;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .price-currency {
+    font-size: 1.2rem;
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 2px;
+  }
+
+  .price-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .price-desc {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .btn-book {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-book::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-book:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,160,32,0.3); }
+  .btn-book:hover::after { opacity: 1; }
+
+  .btn-message {
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+  }
+  .btn-message:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,160,32,0.04); }
+
+  .payment-note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(232,160,32,0.07);
+    border: 1px solid rgba(232,160,32,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    color: #c8a84b;
+    line-height: 1.5;
+  }
+
+  /* PROVIDER */
+  .provider-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--card-glow);
+  }
+
+  .provider-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .provider-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2a2e3e, #3a3f52);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+    overflow: hidden;
+  }
+
+  .provider-info h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 3px;
+  }
+
+  .provider-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .contact-btn {
+    margin-left: auto;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .contact-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .provider-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .provider-stat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .provider-stat .label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .provider-stat .value {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  /* REVIEWS STRIP */
+  .reviews-strip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .rating-big {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stars { color: var(--accent); font-size: 1.1rem; letter-spacing: 2px; }
+
+  .review-count { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+  .review-divider {
+    width: 1px;
+    height: 48px;
+    background: var(--border);
+  }
+
+  .review-item {
+    flex: 1;
+  }
+
+  .review-item q {
+    font-size: 0.88rem;
+    color: #b0b8cc;
+    font-style: italic;
+    line-height: 1.5;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .review-author {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .review-author span {
+    width: 20px;
+    height: 20px;
+    background: var(--surface2);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .layout > * { animation: fadeUp 0.5s ease both; }
+  .layout > :nth-child(2) { animation-delay: 0.1s; }
+  .service-title { animation: fadeUp 0.4s ease both; }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0); backdrop-filter: blur(0px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    pointer-events: none;
+    transition: background 0.35s ease, backdrop-filter 0.35s ease;
+  }
+  .modal-overlay.open {
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    width: 100%; max-width: 520px;
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+    opacity: 0; transform: translateY(32px) scale(0.97);
+    transition: opacity 0.35s cubic-bezier(.22,1,.36,1), transform 0.35s cubic-bezier(.22,1,.36,1);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .modal-overlay.open .modal {
+    opacity: 1; transform: translateY(0) scale(1);
+  }
+  .modal::-webkit-scrollbar { width: 4px; }
+  .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Top accent bar */
+  .modal::before {
+    content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 1px;
+  }
+
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; z-index: 2;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--accent); }
+
+  .modal-head {
+    padding: 28px 28px 0;
+  }
+  .modal-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: rgba(232,160,32,0.12); border: 1px solid rgba(232,160,32,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 14px;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+  .modal-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+
+  .modal-body { padding: 24px 28px 28px; }
+
+  /* FORM FIELDS */
+  .m-label {
+    display: block; font-family: 'Syne', sans-serif; font-weight: 600;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .m-input, .m-select, .m-textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+    padding: 12px 14px; border-radius: 10px; outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .m-input:focus, .m-select:focus, .m-textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,160,32,0.1);
+  }
+  .m-input::placeholder, .m-textarea::placeholder { color: var(--muted); }
+  .m-select option { background: #1c2030; }
+  .m-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .m-group { margin-bottom: 16px; }
+  .m-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* STEP INDICATOR (booking) */
+  .book-steps {
+    display: flex; gap: 0; margin-bottom: 24px;
+    background: var(--surface2); border-radius: 10px; padding: 4px;
+  }
+  .book-step {
+    flex: 1; text-align: center; padding: 8px;
+    font-size: 0.78rem; font-family: 'Syne', sans-serif; font-weight: 600;
+    color: var(--muted); border-radius: 7px; transition: all 0.25s; cursor: pointer;
+  }
+  .book-step.active { background: var(--surface); color: var(--accent); }
+  .book-step.done { color: var(--green); }
+
+  /* BOOKING SUMMARY BOX */
+  .summary-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; margin-bottom: 16px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.87rem;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .s-key { color: var(--muted); }
+  .summary-row .s-val { font-weight: 500; }
+  .summary-row .s-val.accent { color: var(--accent); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; }
+
+  /* TIME SLOTS */
+  .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .time-slot {
+    padding: 10px; border: 1px solid var(--border); border-radius: 9px;
+    text-align: center; font-size: 0.83rem; cursor: pointer;
+    background: var(--surface2); transition: all 0.2s; font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+  .time-slot:hover { border-color: rgba(232,160,32,0.4); }
+  .time-slot.selected { border-color: var(--accent); background: rgba(232,160,32,0.08); color: var(--accent); }
+  .time-slot.unavail { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+  /* DATE GRID */
+  .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
+  .date-head { text-align: center; font-size: 0.65rem; color: var(--muted); padding: 4px 0; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; }
+  .date-cell {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; border-radius: 7px; cursor: pointer;
+    transition: all 0.15s; border: 1px solid transparent;
+  }
+  .date-cell:hover:not(.empty):not(.past) { background: var(--surface2); border-color: var(--border); }
+  .date-cell.selected { background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #000; font-weight: 700; }
+  .date-cell.today { border-color: rgba(232,160,32,0.4); color: var(--accent); }
+  .date-cell.past { opacity: 0.25; cursor: not-allowed; }
+  .date-cell.empty { cursor: default; }
+
+  /* MODAL BUTTONS */
+  .m-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+  .m-btn-back {
+    padding: 13px 20px; border: 1px solid var(--border); background: transparent;
+    color: var(--muted); border-radius: 10px; font-size: 0.9rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .m-btn-back:hover { border-color: var(--accent); color: var(--accent); }
+  .m-btn-next {
+    flex: 1; padding: 13px; background: linear-gradient(135deg,var(--accent),var(--accent2));
+    border: none; color: #000; border-radius: 10px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .m-btn-next:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,160,32,0.3); }
+
+  /* SUCCESS STATE */
+  .modal-success {
+    text-align: center; padding: 20px 0 8px; display: none;
+  }
+  .success-anim {
+    width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 18px;
+    background: rgba(34,197,94,0.12); border: 2px solid rgba(34,197,94,0.3);
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    animation: successPop 0.5s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes successPop {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .success-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 8px; }
+  .success-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.6; max-width: 320px; margin: 0 auto 20px; }
+
+  /* CHAR COUNTER */
+  .char-count { font-size: 0.7rem; color: var(--muted); text-align: right; margin-top: 4px; }
+
+  /* QUICK INFO STRIP */
+  .quick-strip {
+    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .quick-chip {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* MESSAGE CHAR COUNTER */
+  .msg-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .msg-tip { font-size: 0.72rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">auto<span>pro</span>.ba</a>
+  <button class="nav-back">← Back</button>
+  <div class="nav-right">
+    <a class="nav-link" href="#">Inbox</a>
+    <a class="nav-link" href="#">Profile</a>
+    <button class="btn-primary">Post a service</button>
+  </div>
+</nav>
+
+<div class="page">
+  <h1 class="service-title">
+    Full Car Service & Detailing
+    <span class="badge">⚡ Top Rated</span>
+  </h1>
+
+  <div class="layout">
+    <!-- LEFT COLUMN -->
+    <div>
+      <div class="gallery-main" id="mainGallery">
+        <img id="mainImg" src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=1200&q=80" alt="Car being serviced">
+        <div class="gallery-overlay"></div>
+        <div class="gallery-label">
+          <div class="dot"></div>
+          Live Availability
+        </div>
+      </div>
+
+      <div class="thumbs">
+        <div class="thumb active" onclick="switchImg(this,'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800&q=80')">
+          <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=200&q=60" alt="">
+        </div>
+        <div class="thumb" onclick="switchImg(this,'https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=1200&q=80')">
+          <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=200&q=60" alt="">
+        </div>
+        <div class="thumb" onclick="switchImg(this,'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=1200&q=80')">
+          <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=200&q=60" alt="">
+        </div>
+        <div class="thumb" onclick="switchImg(this,'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80')">
+          <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&q=60" alt="">
+        </div>
+      </div>
+
+      <div class="about-card">
+        <h3>About the Service</h3>
+        <p>Professional full-service car maintenance with 12+ years of hands-on experience. I handle everything from routine oil changes and brake inspections to complex engine diagnostics and full exterior detailing — all at your location or in my workshop in Sarajevo Canton.</p>
+
+        <div class="features">
+          <div class="feature-item"><div class="feature-icon">🔧</div> Engine Diagnostics</div>
+          <div class="feature-item"><div class="feature-icon">🛞</div> Tyre & Brake Service</div>
+          <div class="feature-item"><div class="feature-icon">✨</div> Exterior Detailing</div>
+          <div class="feature-item"><div class="feature-icon">🛢️</div> Oil & Filter Change</div>
+          <div class="feature-item"><div class="feature-icon">❄️</div> AC Recharge</div>
+          <div class="feature-item"><div class="feature-icon">🔋</div> Battery & Electrics</div>
+        </div>
+      </div>
+
+      <div class="reviews-strip">
+        <div>
+          <div class="rating-big">4.9</div>
+          <div class="stars">★★★★★</div>
+          <div class="review-count">38 reviews</div>
+        </div>
+        <div class="review-divider"></div>
+        <div class="review-item">
+          <q>Showed up on time, fixed my brakes in under 2 hours. Absolutely professional.</q>
+          <div class="review-author"><span>MK</span> Mirza K. · 2 weeks ago</div>
+        </div>
+        <div class="review-divider"></div>
+        <div class="review-item">
+          <q>Best detailing I've seen in Sarajevo. My car looks brand new!</q>
+          <div class="review-author"><span>AH</span> Amra H. · 1 month ago</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="pricing-card">
+        <div class="pricing-tabs">
+          <div class="pricing-tab active" onclick="switchTab(this, 'basic')">Basic</div>
+          <div class="pricing-tab" onclick="switchTab(this, 'standard')">Standard</div>
+          <div class="pricing-tab" onclick="switchTab(this, 'premium')">Premium</div>
+        </div>
+        <div class="pricing-body">
+          <div class="price-row">
+            <div class="price-amount"><span class="price-currency" id="currency">KM</span><span id="price">45</span></div>
+            <div class="price-badge">⏱ <span id="duration">2 hrs</span></div>
+          </div>
+          <p class="price-desc" id="priceDesc">Oil change, filter replacement and visual multi-point inspection. Includes up to 5L of engine oil.</p>
+
+          <button class="btn-book">Book & Arrange ›</button>
+          <button class="btn-message">Send a message</button>
+
+          <div class="payment-note">
+            💳 Payment is made directly to the provider after the service. Agree on the time and any extras in advance.
+          </div>
+        </div>
+      </div>
+
+      <div class="provider-card">
+        <div class="provider-top">
+          <div class="provider-avatar">🔧</div>
+          <div class="provider-info">
+            <h4>Adnan Kovač</h4>
+            <div class="provider-status"><div class="status-dot"></div> Available now</div>
+          </div>
+          <button class="contact-btn">Contact</button>
+        </div>
+
+        <div class="provider-grid">
+          <div class="provider-stat">
+            <div class="label">Location</div>
+            <div class="value">Sarajevo</div>
+          </div>
+          <div class="provider-stat">
+            <div class="label">Member since</div>
+            <div class="value">2023 M11</div>
+          </div>
+          <div class="provider-stat">
+            <div class="label">Response time</div>
+            <div class="value">~1 hour</div>
+          </div>
+          <div class="provider-stat">
+            <div class="label">Completed</div>
+            <div class="value">38 services</div>
+          </div>
+          <div class="provider-stat">
+            <div class="label">Language</div>
+            <div class="value">Bosnian, EN</div>
+          </div>
+          <div class="provider-stat">
+            <div class="label">Type</div>
+            <div class="value">Mobile + Shop</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchImg(el, src) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const img = document.getElementById('mainImg');
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.3s';
+    setTimeout(() => {
+      img.src = src;
+      img.style.opacity = '1';
+    }, 150);
+  }
+
+  const plans = {
+    basic: { price: '45', duration: '2 hrs', desc: 'Oil change, filter replacement and visual multi-point inspection. Includes up to 5L of engine oil.' },
+    standard: { price: '120', duration: '4 hrs', desc: 'Everything in Basic plus brake inspection, tyre rotation, AC check, and interior vacuum & wipe-down.' },
+    premium: { price: '220', duration: 'Full day', desc: 'Complete service: engine diagnostics, full exterior ceramic detailing, brake service, and all fluid top-ups. Car returned spotless.' }
+  };
+
+  function switchTab(el, plan) {
+    document.querySelectorAll('.pricing-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const p = plans[plan];
+    document.getElementById('price').textContent = p.price;
+    document.getElementById('duration').textContent = p.duration;
+    document.getElementById('priceDesc').textContent = p.desc;
+  }
+</script>
+</body>
+</html>

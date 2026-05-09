@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post a Service – AutoPro.ba</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--border:rgba(255,255,255,.07);--accent:#e8a020;--accent2:#ff6b35;--text:#f0f2f7;--muted:#7a8299;--green:#22c55e;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(13,15,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);text-decoration:none;}
+.nav-logo span{color:var(--accent);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);padding:7px 16px;border-radius:8px;font-size:.87rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+/* PAGE */
+.page{max-width:820px;margin:0 auto;padding:48px 40px 80px;}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:48px;animation:fadeUp .5s ease both;}
+.progress-steps{display:flex;align-items:center;gap:0;}
+.prog-step{display:flex;align-items:center;flex:1;}
+.prog-step:last-child{flex:none;}
+.prog-dot{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;flex-shrink:0;transition:all .4s;border:2px solid var(--border);background:var(--surface);color:var(--muted);}
+.prog-dot.done{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#000;}
+.prog-dot.active{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(232,160,32,.1);}
+.prog-label{margin-left:10px;font-size:.78rem;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);transition:color .3s;}
+.prog-label.active{color:var(--accent);}
+.prog-label.done{color:var(--green);}
+.prog-line{flex:1;height:2px;background:var(--border);margin:0 12px;border-radius:1px;overflow:hidden;position:relative;}
+.prog-line-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .5s ease;}
+.prog-line-fill.done{transform:scaleX(1);}
+
+/* STEP PANEL */
+.step-panel{display:none;animation:stepIn .4s ease both;}
+.step-panel.active{display:block;}
+@keyframes stepIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.step-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;margin-bottom:6px;}
+.step-sub{color:var(--muted);font-size:.9rem;margin-bottom:32px;line-height:1.6;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:24px;}
+.form-label{display:block;font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;}
+.form-input,.form-textarea,.form-select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:14px 16px;border-radius:11px;outline:none;transition:border-color .3s,box-shadow .3s;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,160,32,.08);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--muted);}
+.form-textarea{resize:vertical;min-height:110px;line-height:1.6;}
+.form-select option{background:var(--surface2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.char-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:4px;}
+
+/* CATEGORY GRID */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.cat-opt{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .25s;}
+.cat-opt:hover{border-color:rgba(232,160,32,.3);}
+.cat-opt.selected{border-color:var(--accent);background:rgba(232,160,32,.06);}
+.cat-opt-icon{font-size:1.6rem;margin-bottom:8px;}
+.cat-opt-name{font-size:.8rem;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);}
+.cat-opt.selected .cat-opt-name{color:var(--accent);}
+
+/* PRICING TIERS */
+.tier-cards{display:flex;flex-direction:column;gap:14px;}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .3s;}
+.tier-card:hover{border-color:rgba(232,160,32,.2);}
+.tier-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.tier-label{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;}
+.tier-badge{font-size:.7rem;padding:3px 10px;border-radius:100px;}
+.tier-badge.basic{background:rgba(232,160,32,.1);color:var(--accent);border:1px solid rgba(232,160,32,.2);}
+.tier-badge.standard{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
+.tier-badge.premium{background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.2);}
+.tier-row{display:grid;grid-template-columns:1fr 120px;gap:12px;}
+.tier-price-wrap{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:0 12px;}
+.tier-price-sym{font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);font-size:.9rem;}
+.tier-price-input{background:transparent;border:none;outline:none;color:var(--text);font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;width:70px;padding:12px 0;}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:40px;text-align:center;cursor:pointer;transition:all .3s;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(232,160,32,.03);}
+.upload-icon{font-size:2.5rem;margin-bottom:12px;}
+.upload-text{font-size:.9rem;color:var(--muted);line-height:1.6;}
+.upload-text strong{color:var(--text);}
+.upload-previews{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.preview-img{width:80px;height:60px;border-radius:8px;object-fit:cover;border:1px solid var(--border);animation:fadeUp .3s ease;}
+
+/* LOCATION */
+.location-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+.loc-opt{background:var(--surface);border:2px solid var(--border);border-radius:11px;padding:14px;text-align:center;cursor:pointer;transition:all .25s;font-size:.85rem;}
+.loc-opt:hover{border-color:rgba(232,160,32,.3);}
+.loc-opt.selected{border-color:var(--accent);background:rgba(232,160,32,.05);}
+.loc-opt-icon{font-size:1.4rem;margin-bottom:6px;}
+.loc-opt-name{font-size:.8rem;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);}
+.loc-opt.selected .loc-opt-name{color:var(--accent);}
+
+/* PREVIEW CARD */
+.preview-card{background:var(--surface);border:1px solid rgba(232,160,32,.2);border-radius:18px;padding:24px;margin-bottom:24px;}
+.preview-card h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+.preview-meta{display:flex;gap:16px;font-size:.82rem;color:var(--muted);margin-bottom:16px;}
+.preview-tiers{display:flex;gap:10px;}
+.preview-tier{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+.preview-tier-name{font-size:.72rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.preview-tier-price{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:12px;justify-content:space-between;margin-top:32px;}
+.btn-back{padding:14px 28px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:11px;font-size:.95rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-back:hover{border-color:var(--accent);color:var(--accent);}
+.btn-next{padding:14px 36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#000;border-radius:11px;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-next:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,160,32,.3);}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:48px 0;display:none;animation:fadeUp .6s ease both;}
+.success-icon{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.05));border:2px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 24px;}
+.success-title{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:12px;}
+.success-sub{color:var(--muted);font-size:.95rem;max-width:420px;margin:0 auto 32px;line-height:1.7;}
+.success-btns{display:flex;gap:12px;justify-content:center;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">auto<span>pro</span>.ba</a>
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="location.href='browse.html'">Browse</button>
+    <button class="btn-ghost" onclick="location.href='inbox.html'">Inbox</button>
+    <button class="btn-ghost" onclick="location.href='profile.html'">Profile</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressSteps">
+      <div class="prog-step">
+        <div class="prog-dot active" id="dot0">1</div>
+        <div class="prog-label active" id="lbl0">Category</div>
+      </div>
+      <div class="prog-line"><div class="prog-line-fill" id="line0"></div></div>
+      <div class="prog-step">
+        <div class="prog-dot" id="dot1">2</div>
+        <div class="prog-label" id="lbl1">Details</div>
+      </div>
+      <div class="prog-line"><div class="prog-line-fill" id="line1"></div></div>
+      <div class="prog-step">
+        <div class="prog-dot" id="dot2">3</div>
+        <div class="prog-label" id="lbl2">Pricing</div>
+      </div>
+      <div class="prog-line"><div class="prog-line-fill" id="line2"></div></div>
+      <div class="prog-step">
+        <div class="prog-dot" id="dot3">4</div>
+        <div class="prog-label" id="lbl3">Media</div>
+      </div>
+      <div class="prog-line"><div class="prog-line-fill" id="line3"></div></div>
+      <div class="prog-step">
+        <div class="prog-dot" id="dot4">5</div>
+        <div class="prog-label" id="lbl4">Preview</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: CATEGORY -->
+  <div class="step-panel active" id="step0">
+    <div class="step-title">What service do you offer?</div>
+    <p class="step-sub">Choose the category that best describes your automotive service. This helps customers find you faster.</p>
+    <div class="cat-grid">
+      <div class="cat-opt selected" onclick="selectCat(this)"><div class="cat-opt-icon">🔧</div><div class="cat-opt-name">Engine & Mechanical</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">✨</div><div class="cat-opt-name">Detailing & Wash</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">🛞</div><div class="cat-opt-name">Tyres & Alignment</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">⚡</div><div class="cat-opt-name">Auto Electrics</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">🎨</div><div class="cat-opt-name">Paint & Bodywork</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">❄️</div><div class="cat-opt-name">AC & Cooling</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">🔋</div><div class="cat-opt-name">Battery & Starting</div></div>
+      <div class="cat-opt" onclick="selectCat(this)"><div class="cat-opt-icon">🚗</div><div class="cat-opt-name">Diagnostics & MOT</div></div>
+    </div>
+    <div class="btn-row"><div></div><button class="btn-next" onclick="nextStep()">Continue →</button></div>
+  </div>
+
+  <!-- STEP 2: DETAILS -->
+  <div class="step-panel" id="step1">
+    <div class="step-title">Describe your service</div>
+    <p class="step-sub">Be specific about what's included. Clear listings get 3× more bookings.</p>
+    <div class="form-group">
+      <label class="form-label">Service Title</label>
+      <input class="form-input" type="text" placeholder="e.g. Full Car Service & Detailing – Home Visit" id="serviceTitle">
+    </div>
+    <div class="form-group">
+      <label class="form-label">About the Service</label>
+      <textarea class="form-textarea" placeholder="Describe what's included, tools you use, experience, specialisations, car types you work with…" id="serviceDesc" oninput="updateCharCount(this, 'descCount', 500)"></textarea>
+      <div class="char-count"><span id="descCount">0</span>/500 characters</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Years of Experience</label>
+        <select class="form-select">
+          <option>Select…</option>
+          <option>Less than 1 year</option>
+          <option>1-3 years</option>
+          <option>3-5 years</option>
+          <option>5-10 years</option>
+          <option selected>10+ years</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Service Language</label>
+        <select class="form-select">
+          <option>Bosnian</option>
+          <option selected>Bosnian + English</option>
+          <option>English only</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Location & Availability</label>
+      <div class="location-options">
+        <div class="loc-opt selected" onclick="selectLoc(this)"><div class="loc-opt-icon">🏠</div><div class="loc-opt-name">At my workshop</div></div>
+        <div class="loc-opt" onclick="selectLoc(this)"><div class="loc-opt-icon">🚗</div><div class="loc-opt-name">Mobile (at customer)</div></div>
+        <div class="loc-opt" onclick="selectLoc(this)"><div class="loc-opt-icon">🔄</div><div class="loc-opt-name">Both options</div></div>
+      </div>
+      <input class="form-input" type="text" placeholder="Address or area (e.g. Ilidža, Sarajevo)" style="margin-top:0;">
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: PRICING -->
+  <div class="step-panel" id="step2">
+    <div class="step-title">Set your pricing</div>
+    <p class="step-sub">Offer up to 3 tiers to appeal to different budgets. Basic is required; Standard and Premium are optional.</p>
+    <div class="tier-cards">
+      <div class="tier-card">
+        <div class="tier-header"><div class="tier-label">Basic</div><div class="tier-badge basic">Required</div></div>
+        <div class="tier-row">
+          <input class="form-input" type="text" placeholder="What's included in the basic package?">
+          <div class="tier-price-wrap"><span class="tier-price-sym">KM</span><input class="tier-price-input" type="number" placeholder="45" value="45"></div>
+        </div>
+        <div style="margin-top:10px;">
+          <input class="form-input" type="text" placeholder="Estimated duration (e.g. 2 hours)">
+        </div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-header"><div class="tier-label">Standard</div><div class="tier-badge standard">Optional</div></div>
+        <div class="tier-row">
+          <input class="form-input" type="text" placeholder="What's added in the standard package?">
+          <div class="tier-price-wrap"><span class="tier-price-sym">KM</span><input class="tier-price-input" type="number" placeholder="120"></div>
+        </div>
+        <div style="margin-top:10px;">
+          <input class="form-input" type="text" placeholder="Estimated duration">
+        </div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-header"><div class="tier-label">Premium</div><div class="tier-badge premium">Optional</div></div>
+        <div class="tier-row">
+          <input class="form-input" type="text" placeholder="What's included in your premium offer?">
+          <div class="tier-price-wrap"><span class="tier-price-sym">KM</span><input class="tier-price-input" type="number" placeholder="220"></div>
+        </div>
+        <div style="margin-top:10px;">
+          <input class="form-input" type="text" placeholder="Estimated duration">
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: MEDIA -->
+  <div class="step-panel" id="step3">
+    <div class="step-title">Add photos</div>
+    <p class="step-sub">Listings with photos get 5× more views. Show your work, workspace, or tools. At least 1 photo required.</p>
+    <div class="form-group">
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text"><strong>Click to upload</strong> or drag & drop here<br>JPG, PNG or WEBP · Max 5MB each · Up to 8 photos</div>
+        <div class="upload-previews" id="previews"></div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFiles(this.files)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags (optional)</label>
+      <input class="form-input" type="text" placeholder="e.g. mobile, VW specialist, Sarajevo, oil change (comma-separated)">
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Preview Listing →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: PREVIEW -->
+  <div class="step-panel" id="step4">
+    <div class="step-title">Preview your listing</div>
+    <p class="step-sub">This is how customers will see your service. Make sure everything looks great before publishing.</p>
+    <div class="preview-card">
+      <h3 id="previewTitle">Full Car Service & Detailing</h3>
+      <div class="preview-meta">
+        <span>📍 Sarajevo Canton</span>
+        <span>🔧 Engine & Mechanical</span>
+        <span>🌐 Bosnian + English</span>
+      </div>
+      <div class="preview-tiers">
+        <div class="preview-tier"><div class="preview-tier-name">Basic</div><div class="preview-tier-price">45 KM</div></div>
+        <div class="preview-tier"><div class="preview-tier-name">Standard</div><div class="preview-tier-price">120 KM</div></div>
+        <div class="preview-tier"><div class="preview-tier-name">Premium</div><div class="preview-tier-price">220 KM</div></div>
+      </div>
+    </div>
+    <div style="background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:16px 20px;font-size:.88rem;color:#86efac;line-height:1.6;margin-bottom:32px;">
+      ✓ Your listing will be reviewed within 2 hours and published once approved. You'll receive a notification in your inbox.
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep()">← Edit</button>
+      <button class="btn-next" onclick="publish()" style="padding:14px 48px;font-size:1.05rem;">🚀 Publish Listing</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Listing Submitted!</div>
+    <p class="success-sub">Your service listing is under review. We'll notify you as soon as it goes live — usually within 2 hours.</p>
+    <div class="success-btns">
+      <button class="btn-next" onclick="location.href='profile.html'">View My Profile →</button>
+      <button class="btn-back" onclick="location.href='browse.html'">Browse Services</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 0;
+const totalSteps = 5;
+
+function nextStep() {
+  if (currentStep < totalSteps - 1) {
+    goToStep(currentStep + 1);
+  }
+}
+function prevStep() {
+  if (currentStep > 0) goToStep(currentStep - 1);
+}
+function goToStep(n) {
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+  updateProgress(n);
+  currentStep = n;
+  setTimeout(() => {
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 50);
+}
+function updateProgress(n) {
+  for (let i = 0; i < totalSteps; i++) {
+    const dot = document.getElementById(`dot${i}`);
+    const lbl = document.getElementById(`lbl${i}`);
+    dot.className = 'prog-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+    dot.textContent = i < n ? '✓' : i + 1;
+    lbl.className = 'prog-label' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (i < totalSteps - 1) {
+      const line = document.getElementById(`line${i}`);
+      line.className = 'prog-line-fill' + (i < n ? ' done' : '');
+    }
+  }
+}
+function selectCat(el) {
+  document.querySelectorAll('.cat-opt').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectLoc(el) {
+  document.querySelectorAll('.loc-opt').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function updateCharCount(el, countId, max) {
+  const c = el.value.length;
+  document.getElementById(countId).textContent = c;
+}
+function handleDrag(e, over) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.toggle('dragover', over);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  handleDrag(e, false);
+  handleFiles(e.dataTransfer.files);
+}
+function handleFiles(files) {
+  const previews = document.getElementById('previews');
+  Array.from(files).slice(0, 8).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.className = 'preview-img';
+      img.src = e.target.result;
+      previews.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function publish() {
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// Live preview title
+document.getElementById('serviceTitle')?.addEventListener('input', function() {
+  document.getElementById('previewTitle').textContent = this.value || 'Full Car Service & Detailing';
+});
+</script>
+</body>
+</html>

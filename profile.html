@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile – AutoPro.ba</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--border:rgba(255,255,255,.07);--accent:#e8a020;--accent2:#ff6b35;--text:#f0f2f7;--muted:#7a8299;--green:#22c55e;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(13,15,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);text-decoration:none;}
+.nav-logo span{color:var(--accent);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);padding:7px 16px;border-radius:8px;font-size:.87rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-weight:700;font-size:.87rem;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;}
+.btn-primary:hover{opacity:.9;}
+
+/* COVER */
+.cover{height:220px;background:linear-gradient(135deg,#1a1f2e 0%,#0d1117 40%,rgba(232,160,32,.08) 100%);position:relative;overflow:hidden;}
+.cover-pattern{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.5;}
+.cover-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 60% 100% at 80% 50%,rgba(232,160,32,.12),transparent);}
+.cover-edit{position:absolute;top:16px;right:16px;padding:8px 16px;background:rgba(13,15,20,.7);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.cover-edit:hover{color:var(--text);border-color:var(--accent);}
+
+/* PROFILE HERO */
+.profile-hero{max-width:1100px;margin:0 auto;padding:0 40px;}
+.avatar-row{display:flex;align-items:flex-end;justify-content:space-between;transform:translateY(-40px);}
+.avatar{width:90px;height:90px;border-radius:20px;background:linear-gradient(135deg,var(--surface2),#2a3050);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:2.4rem;position:relative;flex-shrink:0;}
+.avatar-badge{position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;background:var(--green);border-radius:50%;border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:.6rem;}
+.avatar-actions{display:flex;gap:10px;padding-bottom:4px;}
+.edit-btn{padding:9px 20px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:9px;font-size:.87rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.edit-btn:hover{border-color:var(--accent);color:var(--accent);}
+.post-btn{padding:9px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#000;border-radius:9px;font-size:.87rem;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;transition:all .2s;}
+.post-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+.profile-name-row{margin-bottom:20px;}
+.profile-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.verified-badge{font-size:.7rem;background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3);padding:4px 10px;border-radius:100px;letter-spacing:.05em;}
+.profile-handle{color:var(--muted);font-size:.9rem;margin-bottom:10px;}
+.profile-bio{color:#b0b8cc;font-size:.92rem;line-height:1.65;max-width:520px;margin-bottom:14px;}
+.profile-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.profile-tag{padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:.78rem;color:var(--muted);}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:24px;margin-bottom:32px;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 24px;text-align:center;flex:1;opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.stat-box.visible{opacity:1;transform:translateY(0);}
+.stat-box .num{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;display:block;color:var(--text);}
+.stat-box .num span{color:var(--accent);}
+.stat-box .lbl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+
+/* TABS */
+.profile-tabs{border-bottom:1px solid var(--border);display:flex;gap:0;margin-bottom:32px;}
+.ptab{padding:14px 20px;font-size:.88rem;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative;bottom:-1px;}
+.ptab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* CONTENT AREA */
+.profile-content{display:grid;grid-template-columns:1fr 320px;gap:24px;}
+
+/* LISTINGS */
+.my-listings{display:flex;flex-direction:column;gap:16px;}
+.my-listing{background:var(--surface);border:1px solid var(--border);border-radius:14px;display:flex;gap:0;overflow:hidden;cursor:pointer;transition:all .3s;opacity:0;transform:translateY(16px);}
+.my-listing.visible{opacity:1;transform:translateY(0);}
+.my-listing:hover{border-color:rgba(232,160,32,.25);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.ml-img{width:130px;flex-shrink:0;object-fit:cover;}
+.ml-body{padding:16px;flex:1;}
+.ml-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:6px;}
+.ml-meta{display:flex;gap:12px;font-size:.78rem;color:var(--muted);margin-bottom:10px;}
+.ml-meta span{display:flex;align-items:center;gap:4px;}
+.ml-stat-row{display:flex;gap:16px;}
+.ml-stat{font-size:.78rem;color:var(--muted);}
+.ml-stat strong{color:var(--text);}
+.ml-actions{display:flex;gap:8px;margin-top:12px;}
+.ml-btn{padding:6px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border:1px solid var(--border);background:var(--surface2);color:var(--muted);}
+.ml-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ml-btn.danger:hover{border-color:#ef4444;color:#ef4444;}
+.ml-status{padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:600;}
+.ml-status.active{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.ml-status.paused{background:rgba(232,160,32,.1);color:var(--accent);border:1px solid rgba(232,160,32,.2);}
+
+/* SIDEBAR */
+.profile-sidebar{display:flex;flex-direction:column;gap:16px;}
+.side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.side-card.visible{opacity:1;transform:translateY(0);}
+.side-card h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:14px;}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+.detail-row:last-child{border-bottom:none;}
+.detail-row .key{color:var(--muted);}
+.detail-row .val{font-weight:500;}
+.detail-row .val.accent{color:var(--accent);}
+
+/* REVIEW */
+.review-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.review-item:last-child{border-bottom:none;}
+.review-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.reviewer{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;}
+.reviewer-av{width:28px;height:28px;border-radius:7px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.8rem;}
+.stars{color:var(--accent);font-size:.8rem;}
+.review-date{font-size:.72rem;color:var(--muted);}
+.review-text{font-size:.83rem;color:#b0b8cc;line-height:1.55;}
+
+/* EARNINGS CHART */
+.earnings-bars{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:8px;}
+.e-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(to top,var(--accent),var(--accent2));opacity:.7;transition:opacity .2s;cursor:pointer;}
+.e-bar:hover{opacity:1;}
+.e-labels{display:flex;gap:6px;margin-top:6px;}
+.e-label{flex:1;text-align:center;font-size:.65rem;color:var(--muted);}
+.earnings-total{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--text);margin-bottom:2px;}
+.earnings-sub{font-size:.78rem;color:var(--green);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">auto<span>pro</span>.ba</a>
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="location.href='browse.html'">Browse</button>
+    <button class="btn-ghost" onclick="location.href='inbox.html'">Inbox</button>
+    <button class="btn-primary" onclick="location.href='post-service.html'">Post a service</button>
+  </div>
+</nav>
+
+<div class="cover">
+  <div class="cover-pattern"></div>
+  <div class="cover-gradient"></div>
+  <button class="cover-edit">✏️ Edit cover</button>
+</div>
+
+<div class="profile-hero">
+  <div class="avatar-row">
+    <div class="avatar">🔧<div class="avatar-badge">✓</div></div>
+    <div class="avatar-actions">
+      <button class="edit-btn">✏️ Edit Profile</button>
+      <button class="post-btn" onclick="location.href='post-service.html'">+ Post a Service</button>
+    </div>
+  </div>
+
+  <div class="profile-name-row">
+    <div class="profile-name">Adnan Kovač <span class="verified-badge">✓ Verified Pro</span></div>
+    <div class="profile-handle">@adnan.kovac · Member since April 2023</div>
+    <p class="profile-bio">Master mechanic with 12+ years in automotive service. Specialising in VW Group, BMW, and general European cars. Mobile service available across Sarajevo Canton — I come to you.</p>
+    <div class="profile-tags">
+      <div class="profile-tag">🔧 Mechanical</div>
+      <div class="profile-tag">✨ Detailing</div>
+      <div class="profile-tag">⚡ Electrics</div>
+      <div class="profile-tag">📍 Sarajevo</div>
+      <div class="profile-tag">🚗 Mobile Service</div>
+    </div>
+  </div>
+
+  <div class="stats-row" id="statsRow">
+    <div class="stat-box"><span class="num">38</span><span class="lbl">Services Done</span></div>
+    <div class="stat-box"><span class="num">4.<span>9</span></span><span class="lbl">Avg. Rating</span></div>
+    <div class="stat-box"><span class="num">~<span>1h</span></span><span class="lbl">Response Time</span></div>
+    <div class="stat-box"><span class="num">100<span>%</span></span><span class="lbl">Completion Rate</span></div>
+    <div class="stat-box"><span class="num">1,<span>740</span></span><span class="lbl">Earned (KM)</span></div>
+  </div>
+
+  <div class="profile-tabs">
+    <div class="ptab active" onclick="switchTab(this,'listings')">My Listings</div>
+    <div class="ptab" onclick="switchTab(this,'reviews')">Reviews</div>
+    <div class="ptab" onclick="switchTab(this,'bookings')">Bookings</div>
+    <div class="ptab" onclick="switchTab(this,'settings')">Settings</div>
+  </div>
+
+  <div class="profile-content" id="profileContent">
+    <!-- LISTINGS TAB -->
+    <div id="tab-listings">
+      <div class="my-listings" id="myListings">
+        <div class="my-listing" onclick="location.href='car-service.html'">
+          <img class="ml-img" src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=300&q=70" alt="">
+          <div class="ml-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+              <div class="ml-title">Full Car Service & Detailing</div>
+              <div class="ml-status active">● Active</div>
+            </div>
+            <div class="ml-meta"><span>⭐ 4.9 (38 reviews)</span><span>📍 Sarajevo Canton</span><span>💰 from 45 KM</span></div>
+            <div class="ml-stat-row">
+              <div class="ml-stat">Views: <strong>312</strong></div>
+              <div class="ml-stat">Bookings: <strong>38</strong></div>
+              <div class="ml-stat">Conversion: <strong>12.2%</strong></div>
+            </div>
+            <div class="ml-actions">
+              <button class="ml-btn">✏️ Edit</button>
+              <button class="ml-btn">📋 Duplicate</button>
+              <button class="ml-btn">⏸ Pause</button>
+              <button class="ml-btn danger">🗑 Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="my-listing">
+          <img class="ml-img" src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=300&q=70" alt="">
+          <div class="ml-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+              <div class="ml-title">Mobile Tyre Change & Balancing</div>
+              <div class="ml-status active">● Active</div>
+            </div>
+            <div class="ml-meta"><span>⭐ 4.7 (12 reviews)</span><span>📍 Mobile</span><span>💰 from 30 KM</span></div>
+            <div class="ml-stat-row">
+              <div class="ml-stat">Views: <strong>194</strong></div>
+              <div class="ml-stat">Bookings: <strong>12</strong></div>
+              <div class="ml-stat">Conversion: <strong>6.2%</strong></div>
+            </div>
+            <div class="ml-actions">
+              <button class="ml-btn">✏️ Edit</button>
+              <button class="ml-btn">📋 Duplicate</button>
+              <button class="ml-btn">⏸ Pause</button>
+              <button class="ml-btn danger">🗑 Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="my-listing">
+          <img class="ml-img" src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=300&q=70" alt="">
+          <div class="ml-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+              <div class="ml-title">Exterior Ceramic Coating</div>
+              <div class="ml-status paused">⏸ Paused</div>
+            </div>
+            <div class="ml-meta"><span>⭐ 4.8 (7 reviews)</span><span>📍 Workshop</span><span>💰 from 180 KM</span></div>
+            <div class="ml-stat-row">
+              <div class="ml-stat">Views: <strong>88</strong></div>
+              <div class="ml-stat">Bookings: <strong>7</strong></div>
+              <div class="ml-stat">Conversion: <strong>7.9%</strong></div>
+            </div>
+            <div class="ml-actions">
+              <button class="ml-btn">✏️ Edit</button>
+              <button class="ml-btn">▶ Reactivate</button>
+              <button class="ml-btn danger">🗑 Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR always visible -->
+</div>
+
+<script>
+// Re-attach sidebar to grid
+const pc = document.getElementById('profileContent');
+const sidebar = document.createElement('div');
+sidebar.className = 'profile-sidebar';
+sidebar.innerHTML = `
+  <div class="side-card">
+    <h4>Account Details</h4>
+    <div class="detail-row"><span class="key">Location</span><span class="val">Sarajevo Canton</span></div>
+    <div class="detail-row"><span class="key">Languages</span><span class="val">Bosnian, English</span></div>
+    <div class="detail-row"><span class="key">Service type</span><span class="val">Mobile + Workshop</span></div>
+    <div class="detail-row"><span class="key">Member since</span><span class="val">April 2023</span></div>
+    <div class="detail-row"><span class="key">Verification</span><span class="val accent">✓ ID Verified</span></div>
+    <div class="detail-row"><span class="key">Response</span><span class="val">~1 hour</span></div>
+  </div>
+  <div class="side-card">
+    <h4>Monthly Earnings</h4>
+    <div class="earnings-total">1,740 <span style="font-size:1rem;color:var(--muted)">KM</span></div>
+    <div class="earnings-sub">↑ +18% vs last month</div>
+    <div class="earnings-bars">
+      <div class="e-bar" style="height:35%"></div>
+      <div class="e-bar" style="height:55%"></div>
+      <div class="e-bar" style="height:45%"></div>
+      <div class="e-bar" style="height:70%"></div>
+      <div class="e-bar" style="height:60%"></div>
+      <div class="e-bar" style="height:85%"></div>
+      <div class="e-bar" style="height:100%"></div>
+    </div>
+    <div class="e-labels">
+      <span class="e-label">Oct</span><span class="e-label">Nov</span><span class="e-label">Dec</span>
+      <span class="e-label">Jan</span><span class="e-label">Feb</span><span class="e-label">Mar</span><span class="e-label">Apr</span>
+    </div>
+  </div>
+  <div class="side-card">
+    <h4>Recent Reviews</h4>
+    <div class="review-item">
+      <div class="review-top">
+        <div class="reviewer"><div class="reviewer-av">MK</div>Mirza K.</div>
+        <div><div class="stars">★★★★★</div><div class="review-date">2 weeks ago</div></div>
+      </div>
+      <div class="review-text">Showed up on time and fixed my brakes in under 2 hours. Absolutely professional, highly recommend.</div>
+    </div>
+    <div class="review-item">
+      <div class="review-top">
+        <div class="reviewer"><div class="reviewer-av">AH</div>Amra H.</div>
+        <div><div class="stars">★★★★★</div><div class="review-date">1 month ago</div></div>
+      </div>
+      <div class="review-text">Best detailing I've seen in Sarajevo. My car looks brand new after the ceramic treatment!</div>
+    </div>
+  </div>
+`;
+pc.appendChild(sidebar);
+
+// Animate stats
+setTimeout(() => {
+  document.querySelectorAll('.stat-box').forEach((el,i) => {
+    setTimeout(()=>el.classList.add('visible'), i*80);
+  });
+  document.querySelectorAll('.side-card').forEach((el,i) => {
+    setTimeout(()=>el.classList.add('visible'), i*120 + 300);
+  });
+  document.querySelectorAll('.my-listing').forEach((el,i) => {
+    setTimeout(()=>el.classList.add('visible'), i*100 + 200);
+  });
+}, 200);
+
+function switchTab(el, tab) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
